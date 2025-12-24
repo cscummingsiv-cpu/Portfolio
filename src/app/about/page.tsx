@@ -7,8 +7,9 @@ import { getAllProjects } from "@/lib/projects";
 
 export default function AboutPage() {
   const projects = getAllProjects();
-  const featured = projects.filter((p) => p.frontmatter.featured).slice(0, 3);
   const allFeatured = projects.filter((p) => p.frontmatter.featured);
+  const featured = allFeatured.slice(0, 3);
+  const selectedWork = allFeatured.slice(3); // Skip the first 3 that are in Featured Projects
 
   return (
     <Shell>
@@ -122,7 +123,7 @@ export default function AboutPage() {
         )}
 
         {/* SELECTED WORK */}
-        {allFeatured.length > 0 && (
+        {selectedWork.length > 0 && (
           <section>
             <div className="mb-5 flex items-end justify-between">
               <h2 className="text-xl font-semibold tracking-tight">
@@ -138,7 +139,7 @@ export default function AboutPage() {
             </div>
 
             <div className="grid gap-4">
-              {allFeatured.slice(0, 5).map((project) => (
+              {selectedWork.map((project) => (
                 <ProjectCard key={project.slug} project={project} />
               ))}
             </div>

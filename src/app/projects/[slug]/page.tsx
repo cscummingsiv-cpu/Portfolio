@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 import { Shell } from "@/components/Shell";
 import { getAllProjects, getProjectBySlug } from "@/lib/projects";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { ReactNode } from "react";
 import { ArchitectureCard } from "@/components/ArchitectureCard";
 import { InfrastructurePhases } from "@/components/InfrastructurePhases";
 import { GenAIPhases } from "@/components/GenAIPhases";
+import { mdxComponents } from "@/lib/mdxcomponents";
 
 export function generateStaticParams() {
   return getAllProjects().map((p) => ({ slug: p.slug }));
@@ -44,24 +44,24 @@ function parseMDXContent(content: string) {
 function extractMetrics(outcome: string): Array<{ label: string; value: string }> {
   const metrics: Array<{ label: string; value: string }> = [];
   
-  // Extract "24–48 hours to instant" or similar time reduction patterns
-  const timeReductionMatch = outcome.match(/(\d+[–-]\d+\s*(?:hours?|hrs?)\s*to\s*instant|instant\s*insights?|0\s*(?:hours?|hrs?)\s*wait)/i);
-  if (timeReductionMatch) {
-    metrics.push({ label: "Reporting Lag", value: "24–48 hours → instant insights" });
+  // Extract time reduction pattern: "24–48 hours to instant" or similar
+  const timeRangeMatch = outcome.match(/(\d+[–-]\d+\s*(?:hours?|hrs?))\s*to\s*instant/i);
+  if (timeRangeMatch) {
+    metrics.push({ label: "Reporting Lag", value: `${timeRangeMatch[1]} → instant insights` });
   } else {
-    // Fallback: Extract any hours pattern
+    // Fallback: Extract any hours pattern (e.g., "50+ hours per week")
     const hoursMatch = outcome.match(/(\d+\+?\s*(?:hours?|hrs?)\s*(?:per\s*)?(?:week|month|day)?)/i);
     if (hoursMatch) {
       metrics.push({ label: "Time Saved", value: hoursMatch[1] });
     }
   }
   
-  // Extract "0 hours wait time" or similar
-  const waitTimeMatch = outcome.match(/(0\s*(?:hours?|hrs?)\s*wait\s*time|instant\s*(?:insights?|results?))/i);
+  // Extract "0 hours wait time" pattern
+  const waitTimeMatch = outcome.match(/(0\s*(?:hours?|hrs?)\s*wait\s*time)/i);
   if (waitTimeMatch) {
-    metrics.push({ label: "Wait Time", value: "0 hours wait time" });
+    metrics.push({ label: "Wait Time", value: waitTimeMatch[1] });
   } else {
-    // Fallback: look for cost savings
+    // Fallback: look for cost savings (e.g., "$5000 per month")
     const costMatch = outcome.match(/(\$[\d,]+)\s*(?:per\s*)?(?:month|year|week)/i);
     if (costMatch) {
       metrics.push({ label: "Cost Savings", value: `${costMatch[1]} per month` });
@@ -72,20 +72,20 @@ function extractMetrics(outcome: string): Array<{ label: string; value: string }
 }
 
 // Convert Approach text into numbered steps with JSX content
-function extractSteps(approach: string): Array<{ number: number; content: ReactNode }> {
+function extractSteps(approach: string): Array<{ number: number; content: string }> {
   const sentences = approach
     .split(/[.!?]+/)
     .map((s) => s.trim())
     .filter((s) => s.length > 20); // Filter out very short fragments
   
-  const steps: Array<{ number: number; content: ReactNode }> = [];
+  const steps: Array<{ number: number; content: string }> = [];
   let stepNum = 1;
   
   // Group related sentences into steps
   for (let i = 0; i < sentences.length && stepNum <= 4; i++) {
     const sentence = sentences[i];
     if (sentence.length > 0) {
-      steps.push({ number: stepNum, content: parseMarkdownToJSX(sentence) });
+      steps.push({ number: stepNum, content: sentence });
       stepNum++;
     }
   }
@@ -95,7 +95,7 @@ function extractSteps(approach: string): Array<{ number: number; content: ReactN
     const chunks = approach.split(". ").filter((c) => c.trim().length > 0);
     chunks.slice(0, 4).forEach((chunk, idx) => {
       const trimmedChunk = chunk.trim() + ".";
-      steps.push({ number: idx + 1, content: parseMarkdownToJSX(trimmedChunk) });
+      steps.push({ number: idx + 1, content: trimmedChunk });
     });
   }
   
@@ -171,14 +171,7 @@ export default async function ProjectPage({
               <div className="prose prose-zinc max-w-none text-zinc-700 dark:text-zinc-300">
                 <MDXRemote
                   source={sections.problem || ""}
-                  components={{
-                    p: (props) => (
-                      <p {...props} className="my-4 leading-relaxed" />
-                    ),
-                    strong: (props) => (
-                      <strong {...props} className="font-semibold" />
-                    ),
-                  }}
+                  components={mdxComponents}
                 />
               </div>
             </div>
@@ -189,14 +182,7 @@ export default async function ProjectPage({
               <div className="prose prose-zinc max-w-none text-zinc-700 dark:text-zinc-300">
                 <MDXRemote
                   source={sections.approach || ""}
-                  components={{
-                    p: (props) => (
-                      <p {...props} className="my-4 leading-relaxed" />
-                    ),
-                    strong: (props) => (
-                      <strong {...props} className="font-semibold" />
-                    ),
-                  }}
+                  components={mdxComponents}
                 />
               </div>
             </div>
@@ -228,14 +214,7 @@ export default async function ProjectPage({
               <div className="prose prose-zinc max-w-none text-zinc-800 dark:text-zinc-200">
                 <MDXRemote
                   source={sections.outcome}
-                  components={{
-                    p: (props) => (
-                      <p {...props} className="my-4 leading-relaxed" />
-                    ),
-                    strong: (props) => (
-                      <strong {...props} className="font-semibold" />
-                    ),
-                  }}
+                  components={mdxComponents}
                 />
               </div>
             </div>

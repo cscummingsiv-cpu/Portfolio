@@ -5,10 +5,18 @@ import type { Project } from "@/lib/projects";
 function extractMetrics(outcome: string): Array<{ label: string; value: string }> {
   const metrics: Array<{ label: string; value: string }> = [];
   
-  // Extract "50+ hours per week" and format as "50+ hours/week"
-  const hoursMatch = outcome.match(/(\d+\+?\s*(?:hours?|hrs?)\s*(?:per\s*)?(?:week|month|day)?)/i);
+  // Extract "50+ hours per week" and format as "50 hours/week"
+  const hoursMatch = outcome.match(/(\d+)\+?\s*(?:hours?|hrs?)\s*(?:per\s*)?(?:week|month|day)?/i);
   if (hoursMatch) {
-    const hoursValue = hoursMatch[1].replace(/\s+per\s+/i, '/').replace(/\s+/g, '');
+    const number = hoursMatch[1];
+    const unit = hoursMatch[0].match(/(?:hours?|hrs?)/i)?.[0] || 'hours';
+    const period = hoursMatch[0].match(/(?:per\s+)?(week|month|day)/i)?.[1];
+    
+    // Format: "50 hours/week" (remove +, keep space, replace "per" with "/")
+    let hoursValue = `${number} ${unit}`;
+    if (period) {
+      hoursValue += `/${period}`;
+    }
     metrics.push({ label: "Time Saved", value: hoursValue });
   }
   
@@ -30,7 +38,7 @@ function extractMetrics(outcome: string): Array<{ label: string; value: string }
 
 // Extract outcome summary (first sentence of Outcome section)
 function extractOutcomeSummary(content: string): string {
-  const outcomeMatch = content.match(/##\s+Outcome\s*\n\n(.*?)(?=\n\n|$)/is);
+  const outcomeMatch = content.match(/##\s+Outcome\s*\n\n([\s\S]*?)(?=\n\n|$)/i);
   if (outcomeMatch) {
     const outcomeText = outcomeMatch[1].trim();
     // Get first sentence, removing markdown bold
@@ -47,7 +55,7 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
   const fm = project.frontmatter;
   
   // Parse content to extract outcome section
-  const outcomeMatch = project.content.match(/##\s+Outcome\s*\n\n(.*?)(?=\n\n##|$)/is);
+  const outcomeMatch = project.content.match(/##\s+Outcome\s*\n\n([\s\S]*?)(?=\n\n##|$)/i);
   const outcomeText = outcomeMatch ? outcomeMatch[1].trim() : "";
   const metrics = extractMetrics(outcomeText);
   const outcomeSummary = extractOutcomeSummary(project.content) || fm.description;
@@ -55,48 +63,98 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="block rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 transition-all duration-200 hover:border-zinc-400 dark:hover:border-zinc-600 hover:shadow-md hover:-translate-y-1 cursor-pointer group"
+      className="
+        group relative block overflow-hidden cursor-pointer rounded-2xl
+        border border-zinc-800/80 bg-zinc-950/40
+        shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset]
+        transition-all duration-200
+        hover:-translate-y-1 hover:border-zinc-600/80
+        hover:shadow-[0_18px_50px_-20px_rgba(0,0,0,0.95)]
+        active:translate-y-0 active:scale-[0.99]
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500/60
+      "
     >
-      <div className="space-y-4">
-        {/* Title */}
-        <h3 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 group-hover:text-zinc-700 dark:group-hover:text-zinc-300 transition-colors">
-          {fm.title}
-        </h3>
+      {/* Hover sheen overlays */}
+      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100 bg-[radial-gradient(600px_circle_at_30%_20%,rgba(255,255,255,0.08),transparent_40%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.06),transparent_35%)]" />
 
-        {/* Outcome Summary */}
-        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-          {outcomeSummary}
-        </p>
+      {/* Top-right icon button */}
+      <div className="absolute right-4 top-4">
+        <span className="
+          inline-flex items-center justify-center
+          h-9 w-9 rounded-full
+          border border-zinc-800 bg-zinc-950/60
+          text-zinc-400
+          transition
+          group-hover:border-zinc-600 group-hover:text-zinc-100 group-hover:bg-white/5
+        ">
+          ↗
+        </span>
+      </div>
 
-        {/* Metrics */}
-        {metrics.length > 0 && (
-          <div className="flex flex-wrap gap-6">
-            {metrics.map((metric, idx) => (
-              <div key={idx} className="flex flex-col">
-                <div className="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                  {metric.value}
+      {/* Content */}
+      <div className="relative p-6">
+        <div className="space-y-4">
+          {/* Title */}
+          <h3 className="text-xl font-semibold tracking-tight text-zinc-100 transition-colors group-hover:text-white">
+            {fm.title}
+          </h3>
+
+          {/* Outcome Summary */}
+          <p className="text-sm leading-relaxed text-zinc-400">
+            {outcomeSummary}
+          </p>
+
+          {/* Metrics */}
+          {metrics.length > 0 && (
+            <div className="flex flex-wrap gap-6">
+              {metrics.map((metric, idx) => (
+                <div key={idx} className="flex flex-col">
+                  <div className="text-base font-semibold tracking-tight text-zinc-100">
+                    {metric.value}
+                  </div>
+                  <div className="text-xs text-zinc-500 mt-0.5">
+                    {metric.label}
+                  </div>
                 </div>
-                <div className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
-                  {metric.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
 
-        {/* Tech Stack */}
-        {fm.stack && fm.stack.length > 0 && (
-          <div className="flex flex-wrap gap-2 items-center">
-            {fm.stack.map((tech) => (
-              <span
-                key={tech}
-                className="inline-flex items-center rounded-full border border-zinc-200 dark:border-zinc-800 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-400 whitespace-nowrap"
-              >
-                {tech}
-              </span>
-            ))}
+        {/* Tech Stack + CTA */}
+        <div className="mt-5 flex items-center justify-between">
+          {/* Tech Stack */}
+          {fm.stack && fm.stack.length > 0 && (
+            <div className="flex flex-wrap gap-2 items-center">
+              {fm.stack.map((tech) => (
+                <span
+                  key={tech}
+                  className="
+                    rounded-full border border-zinc-800 bg-zinc-950/40
+                    px-2.5 py-1 text-xs text-zinc-400
+                    transition
+                    group-hover:border-zinc-600 group-hover:text-zinc-200
+                  "
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          )}
+          
+          {/* CTA - Pill button style */}
+          <div className="
+            inline-flex items-center gap-2 rounded-full
+            border border-zinc-800 bg-zinc-950/50
+            px-3 py-1 text-xs text-zinc-300
+            transition
+            group-hover:border-zinc-600 group-hover:bg-white/5
+          ">
+            View project
+            <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </div>
-        )}
+        </div>
       </div>
     </Link>
   );
