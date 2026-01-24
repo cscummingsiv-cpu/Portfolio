@@ -1,156 +1,100 @@
 "use client";
 
-import { useState } from "react";
-
 interface Phase {
   id: string;
   title: string;
   description: string;
   icon: string;
-  expandedContent: string;
 }
 
 const phases: Phase[] = [
   {
-    id: "ingestion",
-    title: "Ingestion",
-    description: "Automatically detects new podcast episodes via RSS feeds and webhooks.",
+    id: "detect",
+    title: "Detect",
+    description: "Monitors RSS feeds for new episodes as they publish",
     icon: "📥",
-    expandedContent: "New podcast episodes are automatically detected via RSS feeds or webhooks as soon as they're published.",
   },
   {
-    id: "orchestration",
-    title: "Orchestration",
-    description: "n8n workflow schedules processing, routes tasks, and handles retries.",
+    id: "queue",
+    title: "Queue",
+    description: "Schedules processing and handles retries automatically",
     icon: "⚙️",
-    expandedContent: "An n8n-orchestrated workflow schedules processing, routes tasks, and handles retries without manual oversight.",
   },
   {
-    id: "transcription",
-    title: "Transcription",
-    description: "Converts audio content to text using external transcription APIs.",
+    id: "transcribe",
+    title: "Transcribe",
+    description: "Converts audio to text via speech-to-text API",
     icon: "🎙️",
-    expandedContent: "Audio is transcribed via an external transcription API and passed to an LLM for summarization and pitch extraction.",
   },
   {
-    id: "llm",
-    title: "LLM Processing",
-    description: "Generates editorial pitches, headlines, and story angles using AI.",
+    id: "extract",
+    title: "Extract",
+    description: "Pulls story angles and headlines from transcript",
     icon: "🤖",
-    expandedContent: "The system generates structured editorial outputs, including story angles, headlines, and notes.",
   },
   {
-    id: "output",
-    title: "Editorial Output",
-    description: "Writes structured content directly to Airtable for immediate editorial use.",
+    id: "deliver",
+    title: "Deliver",
+    description: "Writes structured pitches to Airtable for editorial review",
     icon: "📝",
-    expandedContent: "Final outputs are written directly into Airtable, where editors can immediately review the content.",
   },
 ];
 
 export function InfrastructurePhases() {
-  const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
-
-  const handlePhaseClick = (phaseId: string) => {
-    setExpandedPhase(expandedPhase === phaseId ? null : phaseId);
-  };
-
   return (
     <div className="w-full">
       <div className="relative">
-        {/* Progress line */}
         <div className="absolute top-12 left-0 right-0 h-0.5 bg-zinc-200 dark:bg-zinc-800 hidden md:block" />
         
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-2 relative">
-          {phases.map((phase, index) => {
-            const isExpanded = expandedPhase === phase.id;
-            
-            return (
-              <div
-                key={phase.id}
-                className={`relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 transition-all duration-300 ${
-                  isExpanded
-                    ? "border-zinc-300 dark:border-zinc-700 shadow-lg z-10"
-                    : "hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md"
-                }`}
-              >
-                <button
-                  onClick={() => handlePhaseClick(phase.id)}
-                  className="w-full text-left p-6"
-                >
-                  {/* Phase number indicator */}
-                  <div className="absolute -top-3 left-6 hidden md:flex items-center justify-center w-6 h-6 rounded-full bg-zinc-900 dark:bg-zinc-100 text-xs font-semibold text-white dark:text-zinc-900">
-                    {index + 1}
-                  </div>
+          {phases.map((phase, index) => (
+            <div
+              key={phase.id}
+              className="
+                group relative rounded-2xl overflow-hidden
+                border border-zinc-200/60 dark:border-zinc-800/60
+                bg-gradient-to-br from-white via-white to-zinc-50/50
+                dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950/80
+                shadow-[0_1px_3px_0_rgb(0_0_0_/_0.1),0_4px_6px_-1px_rgb(0_0_0_/_0.1),0_0_0_1px_rgb(0_0_0_/_0.05)]
+                dark:shadow-[0_1px_3px_0_rgb(0_0_0_/_0.3),0_4px_6px_-1px_rgb(0_0_0_/_0.2),0_0_0_1px_rgb(255_255_255_/_0.05)]
+                transition-all duration-300 ease-out
+                hover:-translate-y-1 hover:scale-[1.02]
+                hover:shadow-[0_10px_25px_-5px_rgb(0_0_0_/_0.15),0_20px_40px_-10px_rgb(0_0_0_/_0.1),0_0_0_1px_rgb(0_0_0_/_0.1)]
+                dark:hover:shadow-[0_10px_25px_-5px_rgb(0_0_0_/_0.5),0_20px_40px_-10px_rgb(0_0_0_/_0.4),0_0_0_1px_rgb(255_255_255_/_0.1)]
+                hover:border-zinc-300/80 dark:hover:border-zinc-700/80
+              "
+              style={{ transformStyle: 'preserve-3d' }}
+            >
+              <div className="
+                absolute inset-0 rounded-2xl
+                bg-gradient-to-br from-white/40 via-transparent to-transparent
+                dark:from-white/5 dark:via-transparent dark:to-transparent
+                opacity-0 group-hover:opacity-100
+                transition-opacity duration-300
+                pointer-events-none
+              " />
 
-                  {/* Icon */}
-                  <div className="text-4xl mb-3">{phase.icon}</div>
-
-                  {/* Title */}
-                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                    {phase.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-3">
-                    {phase.description}
-                  </p>
-
-                  {/* More link */}
-                  <div className="flex items-center gap-1 text-xs font-medium text-zinc-500 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors">
-                    <span>{isExpanded ? "Less" : "More"}</span>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </div>
-                </button>
-
-                {/* Expanded content with smooth height animation */}
-                <div
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                  }`}
-                >
-                  <div className="px-6 pb-6 pt-0">
-                    <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
-                      <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                        {phase.expandedContent}
-                      </p>
-                    </div>
-                  </div>
+              <div className="w-full text-left p-6 relative z-10">
+                <div className="text-3xl mb-3 transform group-hover:scale-110 transition-transform duration-300">
+                  {phase.icon}
                 </div>
-
-                {/* Arrow connector (hidden on last item) */}
-                {index < phases.length - 1 && (
-                  <div className="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-20 pointer-events-none">
-                    <svg
-                      className="w-6 h-6 text-zinc-300 dark:text-zinc-700"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </div>
-                )}
+                <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                  {phase.title}
+                </h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-500 leading-relaxed">
+                  {phase.description}
+                </p>
               </div>
-            );
-          })}
+
+              {index < phases.length - 1 && (
+                <div className="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-20 pointer-events-none">
+                  <svg className="w-5 h-5 text-zinc-300 dark:text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

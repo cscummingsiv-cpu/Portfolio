@@ -1,14 +1,20 @@
 import { notFound } from "next/navigation";
 import { Shell } from "@/components/Shell";
-import { getAllProjects, getProjectBySlug } from "@/lib/projects";
+import { getAllProjects, getProjectBySlug } from "@/lib/projects.server";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { ArchitectureCard } from "@/components/ArchitectureCard";
 import { InfrastructurePhases } from "@/components/InfrastructurePhases";
 import { GenAIPhases } from "@/components/GenAIPhases";
+import { SlackAlertPhases } from "@/components/SlackAlertPhases";
+import { EditorialPhases } from "@/components/EditorialPhases";
+import { SalesCallPhases } from "@/components/SalesCallPhases";
+import { CategoryLabel } from "@/components/CategoryLabel";
 import { mdxComponents } from "@/lib/mdxcomponents";
+import { getLocale } from "@/lib/i18n-server";
+import { t } from "@/i18n";
 
 export function generateStaticParams() {
-  return getAllProjects().map((p) => ({ slug: p.slug }));
+  return getAllProjects("en").map((p) => ({ slug: p.slug }));
 }
 
 // Helper to parse MDX content into sections
@@ -20,11 +26,9 @@ function parseMDXContent(content: string) {
 
   for (const line of lines) {
     if (line.startsWith("## ")) {
-      // Save previous section
       if (currentSection) {
         sections[currentSection] = currentContent.join("\n").trim();
       }
-      // Start new section
       currentSection = line.replace("## ", "").toLowerCase();
       currentContent = [];
     } else if (currentSection) {
@@ -32,7 +36,6 @@ function parseMDXContent(content: string) {
     }
   }
 
-  // Save last section
   if (currentSection) {
     sections[currentSection] = currentContent.join("\n").trim();
   }
@@ -40,66 +43,56 @@ function parseMDXContent(content: string) {
   return sections;
 }
 
-// Extract metrics from Outcome text
+// Extract metrics from Outcome text - each metric appears ONCE
 function extractMetrics(outcome: string): Array<{ label: string; value: string }> {
   const metrics: Array<{ label: string; value: string }> = [];
   
-  // Extract time reduction pattern: "24–48 hours to instant" or similar
-  const timeRangeMatch = outcome.match(/(\d+[–-]\d+\s*(?:hours?|hrs?))\s*to\s*instant/i);
-  if (timeRangeMatch) {
-    metrics.push({ label: "Reporting Lag", value: `${timeRangeMatch[1]} → instant insights` });
-  } else {
-    // Fallback: Extract any hours pattern (e.g., "50+ hours per week")
-    const hoursMatch = outcome.match(/(\d+\+?\s*(?:hours?|hrs?)\s*(?:per\s*)?(?:week|month|day)?)/i);
-    if (hoursMatch) {
-      metrics.push({ label: "Time Saved", value: hoursMatch[1] });
-    }
+  // Output multiplier (2x, 3x)
+  const multiplierMatch = outcome.match(/(\d+x)\s*(output|throughput|production)/i);
+  const doubledMatch = outcome.match(/(output|production)\s*doubled/i) || outcome.match(/doubled/i);
+  if (multiplierMatch) {
+    metrics.push({ label: "Output", value: multiplierMatch[1] });
+  } else if (doubledMatch) {
+    metrics.push({ label: "Output", value: "2x" });
   }
   
-  // Extract "0 hours wait time" pattern
-  const waitTimeMatch = outcome.match(/(0\s*(?:hours?|hrs?)\s*wait\s*time)/i);
-  if (waitTimeMatch) {
-    metrics.push({ label: "Wait Time", value: waitTimeMatch[1] });
-  } else {
-    // Fallback: look for cost savings (e.g., "$5000 per month")
-    const costMatch = outcome.match(/(\$[\d,]+)\s*(?:per\s*)?(?:month|year|week)/i);
-    if (costMatch) {
-      metrics.push({ label: "Cost Savings", value: `${costMatch[1]} per month` });
-    }
+  // Revenue impact ($20M+)
+  const revenueMatch = outcome.match(/(\$\d+M\+?)/i);
+  if (revenueMatch && metrics.length < 2) {
+    metrics.push({ label: "Revenue Impact", value: revenueMatch[1] });
   }
   
-  return metrics;
+  // Time saved (50+ hours/week)
+  const hoursMatch = outcome.match(/(\d+\+?)\s*hours?(?:\/week| per week| weekly)/i);
+  if (hoursMatch && metrics.length < 2) {
+    metrics.push({ label: "Time Saved", value: `${hoursMatch[1]} hrs/week` });
+  }
+  
+  // Speed improvement (24-48h → instant)
+  const speedMatch = outcome.match(/(\d+[–-]\d+\s*h(?:ours?)?)\s*(?:→|to)\s*instant/i);
+  if (speedMatch && metrics.length < 2) {
+    metrics.push({ label: "Speed", value: `${speedMatch[1]} → instant` });
+  }
+  
+  // Cost savings ($5K/month)
+  const costMatch = outcome.match(/(\$[\d,]+K?)(?:\/month| monthly)/i);
+  if (costMatch && metrics.length < 2) {
+    metrics.push({ label: "Cost Saved", value: `${costMatch[1]}/mo` });
+  }
+  
+  return metrics.slice(0, 2); // Max 2 metrics
 }
 
-// Convert Approach text into numbered steps with JSX content
-function extractSteps(approach: string): Array<{ number: number; content: string }> {
-  const sentences = approach
-    .split(/[.!?]+/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 20); // Filter out very short fragments
-  
-  const steps: Array<{ number: number; content: string }> = [];
-  let stepNum = 1;
-  
-  // Group related sentences into steps
-  for (let i = 0; i < sentences.length && stepNum <= 4; i++) {
-    const sentence = sentences[i];
-    if (sentence.length > 0) {
-      steps.push({ number: stepNum, content: sentence });
-      stepNum++;
-    }
+// Extract a bold headline from the start of outcome text (e.g., "**Headline Text.**")
+function extractOutcomeHeadline(outcome: string): { headline: string | null; body: string } {
+  // Match bold text at the very start: **Some headline text.**
+  const headlineMatch = outcome.match(/^\*\*([^*]+)\*\*\s*/);
+  if (headlineMatch) {
+    const headline = headlineMatch[1].trim();
+    const body = outcome.slice(headlineMatch[0].length).trim();
+    return { headline, body };
   }
-  
-  // If we didn't get enough steps, create them from the text
-  if (steps.length === 0) {
-    const chunks = approach.split(". ").filter((c) => c.trim().length > 0);
-    chunks.slice(0, 4).forEach((chunk, idx) => {
-      const trimmedChunk = chunk.trim() + ".";
-      steps.push({ number: idx + 1, content: trimmedChunk });
-    });
-  }
-  
-  return steps.slice(0, 4);
+  return { headline: null, body: outcome };
 }
 
 export default async function ProjectPage({
@@ -108,118 +101,148 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const locale = await getLocale();
 
-  const project = getProjectBySlug(slug);
+  const project = getProjectBySlug(slug, locale);
   if (!project) return notFound();
 
   const fm = project.frontmatter;
   const sections = parseMDXContent(project.content);
   const metrics = sections.outcome ? extractMetrics(sections.outcome) : [];
+  const outcomeHeadline = sections.outcome ? extractOutcomeHeadline(sections.outcome) : { headline: null, body: "" };
   
   // Determine which phases component to use
-  const PhasesComponent = slug === "genai-text-to-sql-agent" ? GenAIPhases : InfrastructurePhases;
+  const PhasesComponent = 
+    slug === "genai-text-to-sql-agent" 
+      ? GenAIPhases 
+      : slug === "automated-slack-alerting-reporting"
+      ? SlackAlertPhases
+      : slug === "editorial-automation-platform"
+      ? EditorialPhases
+      : slug === "sales-call-intelligence"
+      ? SalesCallPhases
+      : InfrastructurePhases;
   
   return (
     <Shell>
       <article className="prose prose-zinc max-w-none">
-        {/* Hero Section */}
-        <section className="mb-12">
-          <h1 className="mb-2 text-4xl font-semibold tracking-tight sm:text-5xl">
+        {/* 1. PROJECT IDENTITY + CATEGORY */}
+        <section className="mb-10">
+          {/* Category label */}
+          {fm.category && (
+            <div className="not-prose mb-4">
+              <span className="inline-flex px-3 py-1 text-sm font-medium rounded-full border border-zinc-300/50 dark:border-zinc-600/50 bg-zinc-50/50 dark:bg-zinc-800/50">
+                <CategoryLabel category={fm.category} />
+              </span>
+            </div>
+          )}
+          
+          {/* Project title - glow applied directly to text via text-shadow */}
+          <h1 className="header-glow mb-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             {fm.title}
           </h1>
-          <p className="mt-0 text-lg text-zinc-600 dark:text-zinc-400">
+          
+          <p className="mt-0 text-base text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed">
             {fm.description}
           </p>
 
-          <div className="not-prose mt-6 flex flex-wrap gap-2">
-            {fm.stack?.map((t) => (
+          <div className="not-prose mt-5 flex flex-wrap gap-2">
+            {fm.stack?.map((tech) => (
               <span
-                key={t}
-                className="rounded-full border border-zinc-200 dark:border-zinc-800 px-2.5 py-1 text-xs text-zinc-700 dark:text-zinc-400"
+                key={tech}
+                className="rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-400"
               >
-                {t}
+                {tech}
               </span>
             ))}
           </div>
         </section>
 
-        {/* ImpactStrip - 2 Metrics */}
-        {metrics.length > 0 && (
-          <section className="not-prose my-12 border-y border-zinc-200 dark:border-zinc-800 py-8">
-            <div className="flex justify-center gap-12 sm:gap-16">
-              {metrics.map((metric, idx) => (
-                <div key={idx} className="text-center">
-                  <div className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                    {metric.value}
-                  </div>
-                  <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    {metric.label}
+        {/* 2. PROBLEM / SOLUTION (concise, above the fold) */}
+        {(sections.problem || sections.approach) && (
+          <section className="not-prose my-12 grid gap-10 md:grid-cols-2">
+            {sections.problem && (
+              <div className="max-w-lg">
+                <h2 className="label-glow mb-4 text-xs font-semibold tracking-widest uppercase">
+                  {t("projects.problem", locale)}
+                </h2>
+                <div className="prose prose-zinc max-w-none text-zinc-600 dark:text-zinc-400 text-[15px] leading-relaxed">
+                  <MDXRemote source={sections.problem} components={mdxComponents} />
+                </div>
+              </div>
+            )}
+            {sections.approach && (
+              <div className="max-w-lg">
+                <h2 className="label-glow mb-4 text-xs font-semibold tracking-widest uppercase">
+                  {t("projects.solution", locale)}
+                </h2>
+                <div className="prose prose-zinc max-w-none text-zinc-600 dark:text-zinc-400 text-[15px] leading-relaxed">
+                  <MDXRemote source={sections.approach} components={mdxComponents} />
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* 3. OUTCOME (primary emphasis, visually dominant) */}
+        {sections.outcome && (
+          <section className="not-prose my-14">
+            <div className="relative rounded-2xl border-2 border-zinc-900 dark:border-zinc-100 bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-900 dark:to-zinc-950 p-8 md:p-12 overflow-hidden">
+              {/* Top-left directional lighting - very subtle */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(120,160,255,0.04)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,_rgba(120,160,255,0.08)_0%,_transparent_60%)] pointer-events-none" />
+              
+              <h2 className="label-glow relative mb-6 text-xs font-semibold tracking-widest uppercase text-center">
+                {t("projects.outcome", locale)}
+              </h2>
+              
+              {/* Metrics - large, centered, with glow */}
+              {metrics.length > 0 && (
+                <div className="relative flex flex-wrap justify-center gap-16 md:gap-24 mb-8">
+                  {metrics.map((metric, idx) => (
+                    <div key={idx} className="text-center">
+                      <div className="metric-glow text-5xl md:text-6xl font-bold tracking-tight">
+                        {metric.value}
+                      </div>
+                      <div className="mt-3 text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide">
+                        {metric.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Headline (when no numeric metrics but has bold headline) */}
+              {metrics.length === 0 && outcomeHeadline.headline && (
+                <div className="relative text-center mb-8">
+                  <div className="metric-glow text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight whitespace-nowrap">
+                    {outcomeHeadline.headline}
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Problem/Solution Two-Column Block */}
-        {(sections.problem || sections.approach) && (
-          <section className="not-prose my-12 grid gap-8 md:grid-cols-2">
-            <div>
-              <h2 className="mb-4 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                Problem
-              </h2>
-              <div className="prose prose-zinc max-w-none text-zinc-700 dark:text-zinc-300">
-                <MDXRemote
-                  source={sections.problem || ""}
-                  components={mdxComponents}
-                />
-              </div>
-            </div>
-            <div>
-              <h2 className="mb-4 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                Solution
-              </h2>
-              <div className="prose prose-zinc max-w-none text-zinc-700 dark:text-zinc-300">
-                <MDXRemote
-                  source={sections.approach || ""}
-                  components={mdxComponents}
+              )}
+              
+              {/* Outcome statement */}
+              <div className="relative prose prose-zinc max-w-none text-zinc-600 dark:text-zinc-400 text-center max-w-2xl mx-auto text-[15px] leading-relaxed">
+                <MDXRemote 
+                  source={metrics.length === 0 && outcomeHeadline.headline ? outcomeHeadline.body : sections.outcome} 
+                  components={mdxComponents} 
                 />
               </div>
             </div>
           </section>
         )}
 
-        {/* How it Works - Infrastructure Phases */}
-        <section className="not-prose my-12">
-          <h2 className="mb-8 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-            How it works
+        {/* 4. SYSTEM ARCHITECTURE (high-level, non-generic) */}
+        <section className="not-prose my-14">
+          <h2 className="label-glow mb-8 text-xs font-semibold tracking-widest uppercase">
+            System Architecture
           </h2>
           
-          {/* Infrastructure Phases */}
           <div className="mb-6">
             <PhasesComponent />
           </div>
 
-          {/* Technical Diagram Button */}
           <ArchitectureCard />
         </section>
-
-        {/* Outcome - Highlighted Callout */}
-        {sections.outcome && (
-          <section className="not-prose my-12">
-            <div className="rounded-2xl border-2 border-zinc-900 dark:border-zinc-100 bg-zinc-50 dark:bg-zinc-900 p-8">
-              <h2 className="mb-4 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                Outcome
-              </h2>
-              <div className="prose prose-zinc max-w-none text-zinc-800 dark:text-zinc-200">
-                <MDXRemote
-                  source={sections.outcome}
-                  components={mdxComponents}
-                />
-              </div>
-            </div>
-          </section>
-        )}
       </article>
     </Shell>
   );

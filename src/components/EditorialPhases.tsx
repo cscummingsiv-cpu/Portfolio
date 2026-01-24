@@ -9,50 +9,44 @@ interface Phase {
 
 const phases: Phase[] = [
   {
-    id: "input",
-    title: "Input",
-    description: "Accepts plain English questions via chat interface",
-    icon: "💬",
+    id: "ingest",
+    title: "Ingest",
+    description: "Captures content requests from multiple sources into a single queue",
+    icon: "📥",
+  },
+  {
+    id: "normalize",
+    title: "Normalize",
+    description: "Applies consistent structure so any workflow can process any input",
+    icon: "🔄",
+  },
+  {
+    id: "detect",
+    title: "Detect",
+    description: "Flags bottlenecks before they block publication",
+    icon: "🔍",
+  },
+  {
+    id: "enrich",
+    title: "Enrich",
+    description: "Adds AI-generated metadata to accelerate editorial decisions",
+    icon: "🤖",
   },
   {
     id: "route",
     title: "Route",
-    description: "Classifies intent and selects the right agent path",
-    icon: "🔀",
-  },
-  {
-    id: "validate",
-    title: "Validate",
-    description: "Checks query safety before touching the database",
-    icon: "✅",
-  },
-  {
-    id: "generate",
-    title: "Generate",
-    description: "Converts natural language into executable SQL",
-    icon: "🔧",
-  },
-  {
-    id: "execute",
-    title: "Execute",
-    description: "Runs query securely against Snowflake",
+    description: "Pushes ready content to the right destination automatically",
     icon: "⚡",
-  },
-  {
-    id: "render",
-    title: "Render",
-    description: "Returns tables or charts ready for decisions",
-    icon: "📊",
   },
 ];
 
-export function GenAIPhases() {
+export function EditorialPhases() {
   return (
     <div className="w-full">
       <div className="relative">
         <div className="absolute top-12 left-0 right-0 h-0.5 bg-zinc-200 dark:bg-zinc-800 hidden md:block" />
         
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-2 relative">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-2 relative">
           {phases.map((phase, index) => (
             <div
               key={phase.id}
@@ -80,14 +74,14 @@ export function GenAIPhases() {
                 pointer-events-none
               " />
 
-              <div className="w-full text-left p-5 relative z-10">
-                <div className="text-2xl mb-2 transform group-hover:scale-110 transition-transform duration-300">
+              <div className="w-full text-left p-6 relative z-10">
+                <div className="text-3xl mb-3 transform group-hover:scale-110 transition-transform duration-300">
                   {phase.icon}
                 </div>
-                <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+                <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
                   {phase.title}
                 </h3>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500 leading-relaxed">
+                <p className="text-sm text-zinc-500 dark:text-zinc-500 leading-relaxed">
                   {phase.description}
                 </p>
               </div>

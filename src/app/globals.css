@@ -14,8 +14,259 @@
   --foreground: #e5e7eb;
 }
 
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Hero headline setup - neutral with visible soft glow */
+.headline-setup {
+  color: rgb(24 24 27);
+  text-shadow: 
+    0 0 80px rgba(120, 120, 140, 0.5),
+    0 0 40px rgba(120, 120, 140, 0.4),
+    0 0 20px rgba(120, 120, 140, 0.3),
+    0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.dark .headline-setup {
+  color: rgb(250 250 255);
+  text-shadow: 
+    0 0 120px rgba(200, 200, 255, 0.6),
+    0 0 60px rgba(200, 200, 255, 0.5),
+    0 0 30px rgba(200, 200, 255, 0.4),
+    0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+/* Hero headline punchline - colored emphasis with visible glow */
+.headline-punchline {
+  color: rgb(99 102 241);
+  text-shadow: 
+    0 0 100px rgba(99, 102, 241, 0.7),
+    0 0 50px rgba(99, 102, 241, 0.5),
+    0 0 25px rgba(99, 102, 241, 0.4),
+    0 0 10px rgba(129, 140, 248, 0.5);
+  animation: fadeInPunchline 1.2s ease-out forwards;
+}
+
+.dark .headline-punchline {
+  color: rgb(165 180 252);
+  text-shadow: 
+    0 0 120px rgba(129, 140, 248, 0.8),
+    0 0 60px rgba(129, 140, 248, 0.6),
+    0 0 30px rgba(165, 180, 252, 0.5),
+    0 0 10px rgba(199, 210, 254, 0.7);
+}
+
+@keyframes fadeInPunchline {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-1px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes ctaBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.04) translateY(-2px);
+  }
+}
+
+@keyframes ctaHalo {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes scrollDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes arrowFloat {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+
+@keyframes ctaGlow {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-ctaBreathe,
+  .animate-ctaHalo,
+  .animate-ctaGlow,
+  .animate-scrollDown,
+  .animate-arrowFloat,
+  .headline-punchline {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+}
+
+/* ============================================
+   REUSABLE HEADER GLOW TREATMENT
+   Premium, dimensional depth and light
+   NOT neon, NOT animated, NOT decorative
+   ============================================ */
+
+/* Primary page title - project titles
+   Matches homepage headline: soft outer glow + 3D lift + premium depth
+   Applied directly to text via text-shadow, NOT background */
+.header-glow {
+  color: rgb(24 24 27);
+  text-shadow: 
+    0 0 60px rgba(120, 130, 160, 0.35),
+    0 0 30px rgba(120, 130, 160, 0.25),
+    0 0 15px rgba(120, 130, 160, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dark .header-glow {
+  color: rgb(250 250 255);
+  text-shadow: 
+    0 0 80px rgba(180, 190, 230, 0.5),
+    0 0 40px rgba(180, 190, 230, 0.4),
+    0 0 20px rgba(200, 210, 255, 0.3),
+    0 0 8px rgba(255, 255, 255, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Section headers (PROBLEM, SOLUTION, OUTCOME, etc.)
+   Clear anchors when scanning - pops but doesn't scream */
+.label-glow {
+  color: rgb(82 82 91);
+  letter-spacing: 0.12em;
+  text-shadow: 
+    0 0 6px rgba(120, 160, 255, 0.1),
+    0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dark .label-glow {
+  color: rgb(161 161 170);
+  letter-spacing: 0.12em;
+  text-shadow: 
+    0 0 6px rgba(120, 160, 255, 0.18),
+    0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Outcome metrics (numbers only) - feels "energized"
+   Numbers float slightly above the surface */
+.metric-glow {
+  color: rgb(24 24 27);
+  text-shadow: 
+    0 0 10px rgba(120, 160, 255, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.dark .metric-glow {
+  color: rgb(250 250 255);
+  text-shadow: 
+    0 0 10px rgba(120, 160, 255, 0.22),
+    0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Radial gradient backdrop - top-left directional lighting
+   Very low opacity, simulates natural light source */
+.glow-backdrop {
+  position: relative;
+}
+
+.glow-backdrop::before {
+  content: '';
+  position: absolute;
+  inset: -30% -20%;
+  background: radial-gradient(
+    circle at top left,
+    rgba(120, 160, 255, 0.04),
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.dark .glow-backdrop::before {
+  background: radial-gradient(
+    circle at top left,
+    rgba(120, 160, 255, 0.08),
+    transparent 60%
+  );
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.animate-ctaBreathe {
+  animation: ctaBreathe 4.5s ease-in-out infinite;
+}
+
+.animate-ctaHalo {
+  animation: ctaHalo 4.5s ease-in-out infinite;
+}
+
+.animate-scrollDown {
+  animation: scrollDown 2.5s ease-in-out infinite;
+}
+
+.animate-arrowFloat {
+  animation: arrowFloat 3s ease-in-out infinite;
 }
