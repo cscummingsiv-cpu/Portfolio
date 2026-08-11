@@ -4,31 +4,31 @@ const phases = [
   {
     id: "encode",
     title: "Encode",
-    description: "Turns repeatable analysis into reusable agent capabilities",
+    description: "Packages repeatable analyses as agent workflows",
     icon: "🧩",
   },
   {
     id: "context",
     title: "Ground",
-    description: "Connects each workflow to shared business definitions and context",
+    description: "Adds company definitions, metric logic, and operating context",
     icon: "🧠",
   },
   {
     id: "connect",
     title: "Connect",
-    description: "Brings source systems and analytical tools into one workflow",
+    description: "Links the data and tools each analysis needs",
     icon: "🔗",
   },
   {
     id: "validate",
-    title: "Validate",
-    description: "Checks outputs automatically before they reach the business",
+    title: "Check",
+    description: "Tests outputs before users see them",
     icon: "✅",
   },
   {
     id: "deliver",
-    title: "Deliver",
-    description: "Returns self-service analysis in the tools teams already use",
+    title: "Answer",
+    description: "Returns analysis in the team's existing tools",
     icon: "⚡",
   },
 ];

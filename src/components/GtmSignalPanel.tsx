@@ -9,31 +9,31 @@ const workflowSteps = [
     id: "source",
     label: "Source",
     description: "Ingest from CRM, marketing tools, and APIs",
-    detail: "What I build here: Automated webhooks, scheduled syncs, and data normalization pipelines that ensure clean, deduplicated records.",
+    detail: "Webhooks, scheduled syncs, and cleanup rules keep the records current and deduplicated.",
   },
   {
     id: "enrich",
     label: "Enrich",
     description: "Append firmographic data and intent signals",
-    detail: "What I build here: ML models that score intent, append technographic data, and calculate fit from historical patterns.",
+    detail: "Models score intent, add account data, and calculate fit from past results.",
   },
   {
     id: "decide",
     label: "Decide",
     description: "Apply routing rules and scoring thresholds",
-    detail: "What I build here: Dynamic routing logic that prioritizes leads by opportunity size and flags high-value accounts for fast-track.",
+    detail: "Routing rules prioritize leads by opportunity size and flag high-value accounts.",
   },
   {
     id: "route",
     label: "Route",
     description: "Assign to appropriate rep or trigger nurture",
-    detail: "What I build here: CRM task creation, team notifications, and automated nurture sequences based on score tiers.",
+    detail: "The workflow creates CRM tasks, notifies teams, and starts the right follow-up sequence.",
   },
   {
     id: "measure",
     label: "Measure",
     description: "Track conversion rates and pipeline velocity",
-    detail: "What I build here: Dashboards that monitor time-to-close, conversion by source, and anomaly detection for routing optimization.",
+    detail: "Dashboards track time to close, conversion by source, and routing errors.",
   },
 ];
 
@@ -64,7 +64,7 @@ export function GtmSignalPanel() {
                 GTM systems, not slides.
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                I build automation and decisioning systems for revenue teams—routing, enrichment, measurement, and iteration loops that move pipeline.
+                I automate the repetitive work behind revenue teams: routing, enrichment, reporting, QA, and alerts.
               </p>
             </div>
 
@@ -72,19 +72,19 @@ export function GtmSignalPanel() {
               <li className="flex items-start">
                 <span className="mr-3 mt-0.5 text-zinc-400 dark:text-zinc-600">•</span>
                 <span className="text-sm text-zinc-700 dark:text-zinc-300">
-                  Automations that remove pipeline friction (routing, enrichment, alerts)
+                  Routing, enrichment, and alerts without manual handoffs
                 </span>
               </li>
               <li className="flex items-start">
                 <span className="mr-3 mt-0.5 text-zinc-400 dark:text-zinc-600">•</span>
                 <span className="text-sm text-zinc-700 dark:text-zinc-300">
-                  Measurement baked in (dashboards, QA checks, anomaly detection)
+                  QA and anomaly checks built into the workflow
                 </span>
               </li>
               <li className="flex items-start">
                 <span className="mr-3 mt-0.5 text-zinc-400 dark:text-zinc-600">•</span>
                 <span className="text-sm text-zinc-700 dark:text-zinc-300">
-                  Fast iteration loops (ship → observe → tune)
+                  Ship, watch, and fix
                 </span>
               </li>
             </ul>
@@ -173,7 +173,7 @@ export function GtmSignalPanel() {
 
                 <p className="text-xs text-zinc-500 dark:text-zinc-500">Assumes 4.33 weeks / month</p>
                 <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  Automation pays back immediately when it removes recurring manual work.
+                  This is the value of removing recurring manual work.
                 </p>
               </div>
             )}

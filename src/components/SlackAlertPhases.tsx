@@ -29,7 +29,7 @@ const phases: Phase[] = [
   {
     id: "explain",
     title: "Explain",
-    description: "Generates AI context so teams know why numbers moved",
+    description: "Adds context about why the numbers moved",
     icon: "🤖",
   },
   {

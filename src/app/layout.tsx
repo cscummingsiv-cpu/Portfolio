@@ -34,14 +34,14 @@ export const metadata: Metadata = {
     template: "%s | Charlie Cummings",
   },
   description:
-    "Enterprise AI strategy, adoption, internal tooling, and production systems built for measurable business impact.",
+    "Charlie Cummings leads AI functions and builds the systems behind them.",
   openGraph: {
     type: "website",
     url: "https://charlieautomates.co",
     siteName: "Charlie Cummings",
     title: "Charlie Cummings | Enterprise AI Leader & Builder",
     description:
-      "Enterprise AI strategy, adoption, internal tooling, and production systems built for measurable business impact.",
+      "Charlie Cummings leads AI functions and builds the systems behind them.",
     images: [
       {
         url: "/og.png",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Charlie Cummings | Enterprise AI Leader & Builder",
     description:
-      "Enterprise AI strategy, adoption, internal tooling, and production systems built for measurable business impact.",
+      "Charlie Cummings leads AI functions and builds the systems behind them.",
     images: ["/og.png"],
   },
 };

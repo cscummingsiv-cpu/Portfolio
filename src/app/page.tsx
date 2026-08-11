@@ -21,7 +21,7 @@ export default async function Home() {
             {/* Subtle depth overlay - hero text area only */}
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_transparent_40%,_rgba(0,0,0,0.03)_100%)] dark:bg-[radial-gradient(ellipse_at_center,_transparent_0%,_transparent_40%,_rgba(255,255,255,0.02)_100%)] rounded-2xl pointer-events-none" />
             
-            <div className="space-y-10 relative">
+            <div className="space-y-6 relative">
               <h1 className="text-2xl font-medium tracking-tight text-zinc-600 dark:text-zinc-400 pt-2">
                 {t("about.heroTitle", locale)}
               </h1>
@@ -32,26 +32,24 @@ export default async function Home() {
                 <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,_rgba(99,102,241,0.15)_0%,_rgba(99,102,241,0.05)_40%,_transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,_rgba(129,140,248,0.2)_0%,_rgba(129,140,248,0.08)_40%,_transparent_70%)] blur-2xl rounded-full scale-150 -translate-y-4" />
                 
                 <h2 
-                  className="text-[clamp(1.75rem,8vw,4.25rem)] tracking-[-0.02em] leading-[0.95] inline-flex flex-col items-center max-w-full"
+                  className="text-[clamp(1.75rem,5.3vw,4rem)] tracking-[-0.02em] leading-[1.02] inline-flex flex-col items-center max-w-full"
                   style={{ fontFamily: "var(--font-fraunces), serif" }}
                 >
                   <span className="headline-setup font-bold inline-flex flex-col items-center max-w-full">
-                    <span className="block text-center">{t("about.heroHeadlineSetup", locale)}</span>
+                    <span className="block text-center sm:whitespace-nowrap">{t("about.heroHeadlineLine1", locale)}</span>
+                    <span className="block text-center">{t("about.heroHeadlineLine2", locale)}</span>
                   </span>
                   
-                  <span className="headline-punchline mt-4 font-extrabold text-center">
+                  <span className="headline-punchline mt-3 font-extrabold text-center">
                     {t("about.heroHeadlineImpact", locale)}
                   </span>
                 </h2>
               </div>
 
-              <p className="text-base text-zinc-600 dark:text-zinc-400 max-w-xl leading-relaxed mt-10 sm:mt-12">
-                {t("about.heroSubheadSupport", locale)}
-              </p>
             </div>
 
             {/* View Projects Scroll Cue */}
-            <div className="pt-6 pb-4 flex justify-center">
+            <div className="pt-2 pb-4 flex justify-center">
               <ScrollIndicator targetId="projects" />
             </div>
           </div>

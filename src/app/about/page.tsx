@@ -48,24 +48,24 @@ export default async function AboutPage() {
 
   const corePillars = [
     {
-      title: "Enterprise AI Functions",
-      description: "Establish the strategy, operating model, enablement, and measurement required for AI to scale across an organization.",
+      title: "Build the function",
+      description: "Set the roadmap, measure adoption, train teams, and decide where AI is worth the effort.",
       bullets: [
         "AI ownership across 12 departments",
         "40 prioritized automation opportunities"
       ]
     },
     {
-      title: "AI Systems & Decisioning",
-      description: "Architect production systems that make institutional knowledge reusable, validated, and accessible.",
+      title: "Ship the systems",
+      description: "Turn repeatable work into tools people use every week.",
       bullets: [
         "Self-service AI analytics",
         "Multi-agent sales and supply intelligence"
       ]
     },
     {
-      title: "Adoption & Measurement",
-      description: "Pair technical delivery with workflow redesign, enablement, and evidence of business impact.",
+      title: "Prove the result",
+      description: "Track time saved, adoption, and revenue instead of counting demos and prototypes.",
       bullets: [
         "300+ weekly hours eliminated",
         "Adoption across 40+ users"
@@ -96,10 +96,10 @@ export default async function AboutPage() {
             
             <div className="space-y-4">
               <p className="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
-                I’m a Brazilian-American AI leader and hands-on builder based in Brooklyn. At Oats Overnight, I established the company’s first org-wide AI function and now lead strategy, adoption, enablement, measurement, and internal tooling across 12 departments.
+                I’m a Brazilian-American AI leader based in Brooklyn. I’m the Director of AI at Oats Overnight, where I built the company’s first org-wide AI function and own strategy, adoption, measurement, and internal tooling across 12 departments.
               </p>
               <p className="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
-                My background spans analytics, business operations, product, and technical architecture. That shapes how I approach AI: start with the operating problem, build for real constraints, and measure whether the system changes how work gets done. When I’m not working, I’m usually playing tennis, cycling around the city, or walking my dog Bento.
+                Before Oats, I led AI and automation work at People Inc., TelevisaUnivision, and GroundTruth. I’ve spent my career moving between data, operations, product, and engineering, so I’m comfortable owning both the plan and the build. Outside work, I’m usually playing tennis, cycling around the city, or walking my dog Bento.
               </p>
             </div>
           </section>

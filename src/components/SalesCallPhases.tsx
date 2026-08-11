@@ -23,19 +23,19 @@ const phases: Phase[] = [
   {
     id: "structure",
     title: "Structure",
-    description: "Transforms raw insights into CRM-ready and Airtable-ready records",
+    description: "Formats each signal for the CRM and Airtable",
     icon: "📋",
   },
   {
     id: "route",
     title: "Route",
-    description: "Delivers intelligence to Slack, email, and GTM workflows",
+    description: "Sends the signals to Slack, email, and GTM workflows",
     icon: "📬",
   },
   {
     id: "activate",
-    title: "Activate",
-    description: "Enables pre-Sales teams to act on signals during RFPs and deal reviews",
+    title: "Use",
+    description: "Gives Pre-Sales the details during RFPs and deal reviews",
     icon: "⚡",
   },
 ];
@@ -100,4 +100,3 @@ export function SalesCallPhases() {
     </div>
   );
 }
-
