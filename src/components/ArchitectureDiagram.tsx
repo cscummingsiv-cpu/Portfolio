@@ -192,8 +192,8 @@ export const ArchitectureDiagram = forwardRef<ArchitectureDiagramRef, Architectu
 
     const initialEdges = React.useMemo(() => createEdges(), []);
 
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const [nodes, , onNodesChange] = useNodesState(initialNodes);
+    const [edges, , onEdgesChange] = useEdgesState(initialEdges);
     const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
     const fitViewCalled = useRef(false);
 

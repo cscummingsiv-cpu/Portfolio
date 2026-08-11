@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     const resend = new Resend(apiKey);
 
-    const result = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: "Charlie Automates <noreply@charlieautomates.co>",
       to: "info@charlieautomates.co",
       replyTo: email,
@@ -46,18 +46,18 @@ Message:
 ${message}`,
     });
 
-    console.log("[contact]", debugId, "resend result:", result);
+    console.log("[contact]", debugId, "resend result:", { data, error });
 
-    if ((result as any)?.error) {
+    if (error) {
       return NextResponse.json(
-        { ok: false, debugId, error: (result as any).error?.message ?? "Resend error" },
+        { ok: false, debugId, error: error.message ?? "Resend error" },
         { status: 502 }
       );
     }
 
-    return NextResponse.json({ ok: true, debugId, resendId: (result as any)?.data?.id ?? null });
-  } catch (err: any) {
-    console.error("[contact]", debugId, err?.stack || err);
+    return NextResponse.json({ ok: true, debugId, resendId: data?.id ?? null });
+  } catch (err: unknown) {
+    console.error("[contact]", debugId, err instanceof Error ? err.stack : err);
     return NextResponse.json({ ok: false, debugId, error: "Internal Server Error" }, { status: 500 });
   }
 }

@@ -8,6 +8,7 @@ import { GenAIPhases } from "@/components/GenAIPhases";
 import { SlackAlertPhases } from "@/components/SlackAlertPhases";
 import { EditorialPhases } from "@/components/EditorialPhases";
 import { SalesCallPhases } from "@/components/SalesCallPhases";
+import { EnterpriseAIPhases } from "@/components/EnterpriseAIPhases";
 import { CategoryLabel } from "@/components/CategoryLabel";
 import { mdxComponents } from "@/lib/mdxcomponents";
 import { getLocale } from "@/lib/i18n-server";
@@ -44,7 +45,7 @@ function parseMDXContent(content: string) {
 }
 
 // Extract metrics from Outcome text - each metric appears ONCE
-function extractMetrics(outcome: string): Array<{ label: string; value: string }> {
+function extractMetrics(outcome: string, impactStatus?: string): Array<{ label: string; value: string }> {
   const metrics: Array<{ label: string; value: string }> = [];
   
   // Output multiplier (2x, 3x)
@@ -59,13 +60,19 @@ function extractMetrics(outcome: string): Array<{ label: string; value: string }
   // Revenue impact ($20M+)
   const revenueMatch = outcome.match(/(\$\d+M\+?)/i);
   if (revenueMatch && metrics.length < 2) {
-    metrics.push({ label: "Revenue Impact", value: revenueMatch[1] });
+    metrics.push({ label: impactStatus === "Projected" ? "Projected Impact" : "Revenue Impact", value: revenueMatch[1] });
   }
   
   // Time saved (50+ hours/week)
   const hoursMatch = outcome.match(/(\d+\+?)\s*hours?(?:\/week| per week| weekly)/i);
   if (hoursMatch && metrics.length < 2) {
     metrics.push({ label: "Time Saved", value: `${hoursMatch[1]} hrs/week` });
+  }
+
+  // Annual time saved
+  const annualHoursMatch = outcome.match(/(\d+\+?)\s*hours?(?:\/year| per year| annually| of annual)/i);
+  if (annualHoursMatch && metrics.length < 2) {
+    metrics.push({ label: "Time Saved", value: `${annualHoursMatch[1]} hrs/year` });
   }
   
   // Speed improvement (24-48h → instant)
@@ -108,7 +115,7 @@ export default async function ProjectPage({
 
   const fm = project.frontmatter;
   const sections = parseMDXContent(project.content);
-  const metrics = sections.outcome ? extractMetrics(sections.outcome) : [];
+  const metrics = sections.outcome ? extractMetrics(sections.outcome, fm.impactStatus) : [];
   const outcomeHeadline = sections.outcome ? extractOutcomeHeadline(sections.outcome) : { headline: null, body: "" };
   
   // Determine which phases component to use
@@ -121,6 +128,8 @@ export default async function ProjectPage({
       ? EditorialPhases
       : slug === "sales-call-intelligence"
       ? SalesCallPhases
+      : slug === "enterprise-ai-analytics"
+      ? EnterpriseAIPhases
       : InfrastructurePhases;
   
   return (
@@ -145,6 +154,27 @@ export default async function ProjectPage({
           <p className="mt-0 text-base text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed">
             {fm.description}
           </p>
+
+          {(fm.role || fm.collaboration) && (
+            <div className="not-prose mt-6 grid gap-4 sm:grid-cols-2 max-w-3xl">
+              {fm.role && (
+                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/60 p-4">
+                  <div className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                    {t("projects.myRole", locale)}
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200">{fm.role}</p>
+                </div>
+              )}
+              {fm.collaboration && (
+                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/60 p-4">
+                  <div className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                    {t("projects.collaborators", locale)}
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200">{fm.collaboration}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="not-prose mt-5 flex flex-wrap gap-2">
             {fm.stack?.map((tech) => (
@@ -191,9 +221,16 @@ export default async function ProjectPage({
               {/* Top-left directional lighting - very subtle */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(120,160,255,0.04)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,_rgba(120,160,255,0.08)_0%,_transparent_60%)] pointer-events-none" />
               
-              <h2 className="label-glow relative mb-6 text-xs font-semibold tracking-widest uppercase text-center">
-                {t("projects.outcome", locale)}
-              </h2>
+              <div className="relative mb-6 flex items-center justify-center gap-3">
+                <h2 className="label-glow text-xs font-semibold tracking-widest uppercase text-center">
+                  {t("projects.outcome", locale)}
+                </h2>
+                {fm.impactStatus && (
+                  <span className="rounded-full border border-zinc-300 dark:border-zinc-700 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
+                    {t(`projects.impact${fm.impactStatus}`, locale)}
+                  </span>
+                )}
+              </div>
               
               {/* Metrics - large, centered, with glow */}
               {metrics.length > 0 && (
@@ -234,14 +271,14 @@ export default async function ProjectPage({
         {/* 4. SYSTEM ARCHITECTURE (high-level, non-generic) */}
         <section className="not-prose my-14">
           <h2 className="label-glow mb-8 text-xs font-semibold tracking-widest uppercase">
-            System Architecture
+            {t("projects.howItWorks", locale)}
           </h2>
           
           <div className="mb-6">
             <PhasesComponent />
           </div>
 
-          <ArchitectureCard />
+          {slug === "project-1" && <ArchitectureCard />}
         </section>
       </article>
     </Shell>

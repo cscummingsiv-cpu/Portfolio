@@ -3,15 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { useMounted } from "@/lib/useMounted";
 
 export function FloatingCTA() {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -82,7 +79,7 @@ export function FloatingCTA() {
           <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/25 via-white/5 to-transparent dark:from-white/10 dark:via-white/0 pointer-events-none" />
           
           <span className="relative z-10 flex items-center gap-2">
-            Automate With Me
+            Let&apos;s Connect
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>

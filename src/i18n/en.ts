@@ -1,7 +1,7 @@
 export const en = {
   // Navigation
   nav: {
-    home: "Home",
+    home: "Charlie Cummings",
     about: "About",
     projects: "Projects",
     contact: "Contact",
@@ -10,15 +10,17 @@ export const en = {
   // About page
   about: {
     heroTitle: "Hi, I'm Charlie.",
-    heroSubhead: "95% of AI initiatives never produce revenue. I build the other 5%.",
-    heroSubheadSupport: "Automation, data, and AI systems built to run inside real businesses.",
-    heroTooling: "Automation · AI Workflows · Data & GTM Ops",
+    heroSubhead: "I build enterprise AI systems that move from strategy to measurable business impact.",
+    heroHeadlineSetup: "I build enterprise AI systems",
+    heroHeadlineImpact: "that deliver measurable business impact.",
+    heroSubheadSupport: "AI strategy, adoption, internal tooling, and production systems—built for real organizations.",
+    heroTooling: "AI Strategy · Adoption · Production Systems",
     heroMetricsSaved: "saved",
     heroMetricsROI: "in measurable ROI",
-    heroBio: "I build automation systems for GTM and revenue teams, turning complex operational workflows into scalable, production-ready tools. With nearly a decade of experience across analytics, business operations, and product, I combine n8n orchestration, AI-powered workflows, and custom integrations to drive measurable revenue impact and real team adoption.",
-    scrollIndicator: "See the 5%",
+    heroBio: "I establish enterprise AI functions and build the systems behind them. My work spans strategy, adoption, measurement, internal tooling, and production architecture—turning ambiguous cross-functional problems into durable systems with measurable impact.",
+    scrollIndicator: "See selected work",
     profileName: "Charlie Cummings",
-    profileRole: "Automation & AI Operator",
+    profileRole: "Director of AI · Hands-on Builder",
     profileLocation: "Brooklyn / NYC",
     profileGetInTouch: "Get in touch →",
     profileLabel: "About",
@@ -33,9 +35,9 @@ export const en = {
     whyFail1: "They optimize models instead of operations.",
     whyFail2: "Ownership disappears after launch.",
     whyFail3: "Systems aren't designed for real constraints.",
-    midPageQuote: "The difference between the 95% and the 5% isn't intelligence — it's system design.",
-    contactTitle: "If your AI or automation initiative hasn't paid for itself, it's not a tech problem.",
-    contactCTA: "Fix the system",
+    midPageQuote: "AI creates value when strategy, systems, and adoption move together.",
+    contactTitle: "The best AI strategy is one the business can actually use.",
+    contactCTA: "See how I build",
     contactFooter: "Open to full-time roles where this work compounds.",
   },
   
@@ -54,19 +56,24 @@ export const en = {
     solution: "Solution",
     howItWorks: "How it works",
     outcome: "Outcome",
+    myRole: "My role",
+    collaborators: "Collaboration",
+    impactMeasured: "Measured",
+    impactProjected: "Projected",
+    impactQualitative: "Qualitative",
     viewTechnicalDiagram: "View technical diagram",
   },
   
   // Contact
   contact: {
-    title: "Let's talk about a real problem.",
-    subtitle: "If you're exploring automation, AI workflows, or GTM systems that need to produce measurable outcomes, I'm happy to connect.",
+    title: "Let's talk about where AI can create leverage.",
+    subtitle: "I'm open to full-time AI leadership roles and conversations about building durable AI capability inside ambitious organizations.",
     backToAbout: "← Back to About",
     name: "Name",
     email: "Email",
     company: "Company / Role",
     companyOptional: "(optional)",
-    message: "What are you trying to automate or improve?",
+    message: "What are you building—or what role do you have in mind?",
     messageHelper: "A sentence or two is plenty. Links/context welcome.",
     send: "Send →",
     sending: "Sending…",
@@ -108,6 +115,3 @@ export const en = {
     error: "Error",
   },
 };
-
-
-

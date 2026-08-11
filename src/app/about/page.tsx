@@ -9,21 +9,21 @@ export default async function AboutPage() {
 
   const experience = [
     {
-      company: "People Inc.",
-      title: "Senior Staff AI Operator",
-      period: "Jul 2025–Present",
+      company: "Oats Overnight",
+      title: "Director of AI",
+      period: "Feb 2026–Present",
       bullets: [
-        "Technical lead for a 60+ workflow editorial automation platform projected to deliver $20M+ in annual revenue lift",
-        "Led company-wide adoption of n8n as the core automation and AI orchestration layer"
+        "Established the first org-wide AI function, owning strategy, adoption, enablement, measurement, and internal tooling across 12 departments",
+        "Architected the foundation for a self-service AI analytics platform that eliminated 300+ hours of weekly manual reporting across 40+ users"
       ]
     },
     {
       company: "People Inc.",
-      title: "Product Operations Manager",
-      period: "Sep 2024–Jul 2025",
+      title: "Senior Staff AI Operator",
+      period: "Sep 2024–Feb 2026",
       bullets: [
-        "Automated revenue tracking and executive reporting, eliminating 50+ hours of manual work per week",
-        "Led cross-functional integration with Walmart Connect, unlocking a $10M revenue opportunity"
+        "Technical lead for a 60+ workflow editorial automation platform supporting a roadmap with $20M+ in projected annual revenue lift",
+        "Secured CMO sponsorship and led development of a sales intelligence platform projected to eliminate 100+ hours of weekly work and generate $5M+ annually"
       ]
     },
     {
@@ -31,8 +31,8 @@ export default async function AboutPage() {
       title: "Product Operations Manager, AI Ops",
       period: "Aug 2022–Sep 2024",
       bullets: [
-        "Built and deployed a multi-model AI agent integrated with Snowflake and OpenAI to deliver real-time supply insights",
-        "Launched the company's first organization-wide audience dashboards for Sales and Marketing teams"
+        "Built a multi-model AI agent integrated with Snowflake and OpenAI to deliver real-time supply insights to nontechnical users",
+        "Eliminated 100+ hours of annual manual reporting"
       ]
     },
     {
@@ -48,35 +48,35 @@ export default async function AboutPage() {
 
   const corePillars = [
     {
-      title: "Automation Platforms",
-      description: "Build scalable orchestration systems that eliminate manual work and enable team adoption.",
+      title: "Enterprise AI Functions",
+      description: "Establish the strategy, operating model, enablement, and measurement required for AI to scale across an organization.",
       bullets: [
-        "60+ workflow Editorial Automation Platform",
-        "n8n standards and architecture leadership"
+        "AI ownership across 12 departments",
+        "40 prioritized automation opportunities"
       ]
     },
     {
-      title: "AI Agents & Decisioning",
-      description: "Design multi-agent systems that make real-time decisions and deliver measurable business outcomes.",
+      title: "AI Systems & Decisioning",
+      description: "Architect production systems that make institutional knowledge reusable, validated, and accessible.",
       bullets: [
-        "Sales Intelligence Engine ($5M impact)",
-        "Multi-model AI agents for supply insights"
+        "Self-service AI analytics",
+        "Multi-agent sales and supply intelligence"
       ]
     },
     {
-      title: "Revenue & Measurement",
-      description: "Embed measurement and ROI tracking into every system, ensuring clear business impact.",
+      title: "Adoption & Measurement",
+      description: "Pair technical delivery with workflow redesign, enablement, and evidence of business impact.",
       bullets: [
-        "$20M+ projected annual revenue lift",
-        "Automated reporting and anomaly detection"
+        "300+ weekly hours eliminated",
+        "Adoption across 40+ users"
       ]
     }
   ];
 
   const skills = {
-    "Orchestration": ["n8n", "Google Apps Script", "Airtable"],
-    "AI": ["OpenAI API", "Multi-agent systems", "LLMs"],
-    "Data": ["SQL", "Python", "BigQuery", "Snowflake", "JavaScript"]
+    "AI & LLM": ["Claude", "Claude Code", "LLM orchestration", "AI agents", "Multi-agent systems", "RAG", "MCP"],
+    "Automation & Infrastructure": ["n8n", "GitHub Actions", "Google Cloud Run", "REST APIs"],
+    "Data & Analytics": ["Python", "SQL", "Snowflake", "BigQuery", "PostgreSQL", "Athena"]
   };
 
   return (
@@ -91,15 +91,15 @@ export default async function AboutPage() {
               {t("nav.about", locale)}
             </h1>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
-              Brooklyn / NYC · Senior Staff AI Operator at People Inc.
+              Brooklyn / NYC · Director of AI at Oats Overnight
             </p>
             
             <div className="space-y-4">
               <p className="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
-                I'm a Brazilian-American operator based in Brooklyn, fluent in Portuguese, and I've spent the better part of a decade working inside complex, fast-moving organizations. Today, I lead AI and automation for People Inc.'s direct and programmatic sales teams, designing production-grade systems that move revenue, eliminate manual work, and hold up under real operational pressure.
+                I’m a Brazilian-American AI leader and hands-on builder based in Brooklyn. At Oats Overnight, I established the company’s first org-wide AI function and now lead strategy, adoption, enablement, measurement, and internal tooling across 12 departments.
               </p>
               <p className="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
-                My background spans analytics, business operations, and product, which shapes how I approach AI: pragmatically, with a focus on durability, adoption, and measurable impact. When I'm not working, I'm usually playing tennis, cycling around the city or walking my dog Bento.
+                My background spans analytics, business operations, product, and technical architecture. That shapes how I approach AI: start with the operating problem, build for real constraints, and measure whether the system changes how work gets done. When I’m not working, I’m usually playing tennis, cycling around the city, or walking my dog Bento.
               </p>
             </div>
           </section>

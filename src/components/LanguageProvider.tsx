@@ -19,13 +19,10 @@ const LanguageContext = createContext<LanguageContextType>(defaultContextValue);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
-  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
   // Initialize locale from cookie or localStorage
   useEffect(() => {
-    setMounted(true);
-    
     // Try to get from cookie first (for SSR compatibility)
     const cookieLocale = document.cookie
       .split("; ")
@@ -33,21 +30,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       ?.split("=")[1] as Locale | undefined;
     
     if (cookieLocale && ["en", "pt-BR", "es"].includes(cookieLocale)) {
-      setLocaleState(cookieLocale);
-      return;
+      const timer = window.setTimeout(() => setLocaleState(cookieLocale), 0);
+      return () => window.clearTimeout(timer);
     }
     
     // Fallback to localStorage
     const storedLocale = localStorage.getItem("locale") as Locale | null;
     if (storedLocale && ["en", "pt-BR", "es"].includes(storedLocale)) {
-      setLocaleState(storedLocale);
       // Sync to cookie
       document.cookie = `locale=${storedLocale}; path=/; max-age=31536000`; // 1 year
-      return;
+      const timer = window.setTimeout(() => setLocaleState(storedLocale), 0);
+      return () => window.clearTimeout(timer);
     }
     
     // Default to 'en'
-    setLocaleState("en");
+    return undefined;
   }, []);
 
   const setLocale = (newLocale: Locale) => {
@@ -73,10 +70,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Update html lang attribute when locale changes
   useEffect(() => {
-    if (mounted && typeof document !== "undefined") {
+    if (typeof document !== "undefined") {
       document.documentElement.lang = locale;
     }
-  }, [locale, mounted]);
+  }, [locale]);
 
   // Always provide the context, even before mounted
   return (
@@ -94,6 +91,5 @@ export function useI18n() {
   }
   return context;
 }
-
 
 

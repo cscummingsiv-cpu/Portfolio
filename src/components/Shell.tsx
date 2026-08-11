@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelect } from "@/components/LanguageSelect";
 import { useI18n } from "./LanguageProvider";
 import { t, tWithParams } from "@/i18n";

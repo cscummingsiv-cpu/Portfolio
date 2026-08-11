@@ -11,6 +11,8 @@ export type ProjectFrontmatter = {
   date: string;
   category?: string;
   role?: string;
+  collaboration?: string;
+  impactStatus?: "Measured" | "Projected" | "Qualitative";
   stack?: string[];
   links?: { live?: string; repo?: string };
   featured?: boolean;

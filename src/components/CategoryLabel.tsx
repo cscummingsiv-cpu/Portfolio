@@ -2,6 +2,10 @@
 
 // Single source of truth for category styling
 export const categoryStyles: Record<string, { label: string; accentColor: string }> = {
+  "AI Operations": {
+    label: "AI Operations",
+    accentColor: "#818CF8", // indigo-400
+  },
   "Content Systems": {
     label: "Content Systems",
     accentColor: "#A78BFA", // violet-400
@@ -58,4 +62,3 @@ export function CategoryLabel({ category, className = "" }: CategoryLabelProps) 
 export function getCategoryAccentColor(category: string): string {
   return categoryStyles[category]?.accentColor ?? "#A1A1AA"; // zinc-400 fallback
 }
-

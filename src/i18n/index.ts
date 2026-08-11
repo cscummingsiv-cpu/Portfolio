@@ -14,11 +14,12 @@ export const dictionaries = {
 } as const;
 
 // Helper function to get nested value from object
-function getNestedValue(obj: any, path: string): string {
+function getNestedValue(obj: unknown, path: string): string {
   const keys = path.split(".");
-  let value = obj;
+  let value: unknown = obj;
   for (const key of keys) {
-    value = value?.[key];
+    if (typeof value !== "object" || value === null) return "";
+    value = (value as Record<string, unknown>)[key];
     if (value === undefined) return "";
   }
   return typeof value === "string" ? value : "";

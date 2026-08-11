@@ -3,15 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { useMounted } from "@/lib/useMounted";
 
 export function AboutFloatingCTA() {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -76,7 +73,7 @@ export function AboutFloatingCTA() {
             !isOpen ? "animate-ctaBreathe" : ""
           }`}
         >
-          <span className="relative z-10">Automate With Me</span>
+          <span className="relative z-10">Let&apos;s Connect</span>
           <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/12 to-white/0 pointer-events-none" />
         </button>
       </div>

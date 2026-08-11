@@ -26,7 +26,7 @@ export default async function Home() {
                 {t("about.heroTitle", locale)}
               </h1>
 
-              {/* Subhead as primary visual anchor - Two tightly coupled lines */}
+              {/* Positioning statement as primary visual anchor */}
               <div className="relative w-full max-w-full lg:max-w-3xl">
                 {/* Ambient glow behind headline block */}
                 <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,_rgba(99,102,241,0.15)_0%,_rgba(99,102,241,0.05)_40%,_transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,_rgba(129,140,248,0.2)_0%,_rgba(129,140,248,0.08)_40%,_transparent_70%)] blur-2xl rounded-full scale-150 -translate-y-4" />
@@ -35,15 +35,12 @@ export default async function Home() {
                   className="text-[clamp(1.75rem,8vw,4.25rem)] tracking-[-0.02em] leading-[0.95] inline-flex flex-col items-center max-w-full"
                   style={{ fontFamily: "var(--font-fraunces), serif" }}
                 >
-                  {/* Lines 1-2: Setup - first line defines width, second centered under it */}
                   <span className="headline-setup font-bold inline-flex flex-col items-center max-w-full">
-                    <span className="block sm:w-max">95% of AI initiatives</span>
-                    <span className="block w-full text-center text-[0.94em]">never produce revenue.</span>
+                    <span className="block text-center">{t("about.heroHeadlineSetup", locale)}</span>
                   </span>
                   
-                  {/* Line 3: Conviction - Colored punchline, centered under setup */}
                   <span className="headline-punchline mt-4 font-extrabold text-center">
-                    I build the other 5%.
+                    {t("about.heroHeadlineImpact", locale)}
                   </span>
                 </h2>
               </div>

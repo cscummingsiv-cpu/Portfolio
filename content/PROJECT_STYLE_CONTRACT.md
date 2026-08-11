@@ -15,7 +15,7 @@ All project detail pages must follow this contract for consistency, compression,
 ## Required Section Order
 
 ```
-1. Project Identity + Category (top)
+1. Project Identity + Category + Contribution (top)
 2. Problem / Solution (concise, above the fold)
 3. Outcome (primary emphasis, visually dominant)
 4. System Architecture (high-level, non-generic)
@@ -36,6 +36,9 @@ All project detail pages must follow this contract for consistency, compression,
 - Category label: One of `Content Production`, `Revenue Operations`, `Data & Analytics`, `GTM Systems`
 - Description: Max **20 words**, includes primary metric or scale
 - Stack tags: 4–5 max, ordered by importance
+- My role: state personal ownership precisely
+- Collaboration: name material partners without diluting leadership
+- Impact status: label every outcome `Measured`, `Projected`, or `Qualitative`
 
 ---
 
@@ -63,7 +66,8 @@ All project detail pages must follow this contract for consistency, compression,
 - **Metrics first**: Large, centered, max 2 metrics
 - **Impact statement**: 1–2 sentences, declarative
 - Each metric appears **once** (not repeated in prose)
-- Prefer declarative statements: "Enabled $20M+ growth" over "The platform helped enable..."
+- Use declarative language for realized outcomes and explicit qualifiers for estimates
+- Never present a projection, modeled estimate, or commercial opportunity as realized revenue
 
 **Metric priority:**
 1. Revenue impact ($20M+)
@@ -118,7 +122,7 @@ Processing — Utilizes advanced processing capabilities
 | "Leverages" / "Utilizes" | Corporate speak | "Uses" or just the verb |
 | "End-to-end" | Overused | Describe the actual scope |
 | "Robust" / "Scalable" | Empty adjectives | Show scale via metrics |
-| "Helped to..." | Hedging | "Enabled" or "Saved" |
+| "Helped to..." | Usually vague | State the specific ownership or collaboration |
 | "60+ workflows" in Outcome | Implementation trivia | Focus on output/revenue |
 
 ---
@@ -129,6 +133,8 @@ Before publishing any project page:
 
 - [ ] Category label is present and consistent with taxonomy
 - [ ] Description ≤ 20 words with metric or scale
+- [ ] Personal role and material collaboration are explicit
+- [ ] Impact is labeled Measured, Projected, or Qualitative
 - [ ] Problem ≤ 2 sentences, states constraint
 - [ ] Solution ≤ 2 sentences, architectural level
 - [ ] Outcome has max 2 large metrics, centered
@@ -140,4 +146,4 @@ Before publishing any project page:
 
 ---
 
-*Last updated: January 2025*
+*Last updated: August 2026*

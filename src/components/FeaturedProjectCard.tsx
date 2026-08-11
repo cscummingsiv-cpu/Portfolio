@@ -6,38 +6,8 @@ import type { Locale } from "@/i18n";
 import { t } from "@/i18n";
 import { CategoryLabel } from "./CategoryLabel";
 
-// Extract revenue impact (short, concrete outcome) from Outcome text
-function extractRevenueImpact(outcome: string): string {
-  // Look for dollar amounts first (most concrete)
-  const dollarMatch = outcome.match(/(\$[\d,]+(?:\+)?)\s*(?:per\s*)?(?:month|year|week|annually)/i);
-  if (dollarMatch) {
-    const period = outcome.match(/(?:per\s*)?(month|year|week|annually)/i)?.[1] || 'month';
-    return `${dollarMatch[1]} per ${period}`;
-  }
-  
-  // Look for percentage increases
-  const percentMatch = outcome.match(/(\d+%)\s*(?:increase|growth|improvement|boost)/i);
-  if (percentMatch) {
-    return `${percentMatch[1]} increase`;
-  }
-  
-  // Look for time savings that imply revenue impact
-  const hoursMatch = outcome.match(/(\d+)\+?\s*(?:hours?|hrs?)\s*(?:per\s*)?(?:week|month)/i);
-  if (hoursMatch) {
-    return `${hoursMatch[1]}+ hours saved`;
-  }
-  
-  // Fallback: first sentence of outcome
-  const firstSentence = outcome.split(/[.!?]+/)[0].trim();
-  if (firstSentence.length > 0 && firstSentence.length < 80) {
-    return firstSentence;
-  }
-  
-  return "";
-}
-
 // Extract metrics from Outcome text (same logic as project detail page)
-function extractMetrics(outcome: string, locale: string = "en"): Array<{ label: string; value: string; labelKey: string }> {
+function extractMetrics(outcome: string): Array<{ label: string; value: string; labelKey: string }> {
   const metrics: Array<{ label: string; value: string; labelKey: string }> = [];
   
   // Check for workflows pattern (e.g., "60+ workflows")
@@ -53,11 +23,12 @@ function extractMetrics(outcome: string, locale: string = "en"): Array<{ label: 
   }
   
   // First, prioritize "hours per week" or "hours/week" pattern
-  const hoursPerWeekMatch = outcome.match(/(\d+)\+?\s*(?:hours?|hrs?)\s*(?:\/|per\s+)(?:week|month|day)/i);
+  const hoursPerWeekMatch = outcome.match(/(\d+)\+?\s*(?:hours?|hrs?)\s*(?:\/|per\s+|of\s+)?(?:week|month|day|year|annual|annually|weekly|monthly)/i);
   if (hoursPerWeekMatch && metrics.length < 2) {
     const number = hoursPerWeekMatch[1];
-    const hasPlus = outcome.match(/(\d+)\+?\s*(?:hours?|hrs?)\s*(?:\/|per\s+)(?:week|month|day)/i)?.[0].includes('+');
-    const period = hoursPerWeekMatch[0].match(/(week|month|day)/i)?.[1] || 'week';
+    const hasPlus = hoursPerWeekMatch[0].includes('+');
+    const rawPeriod = hoursPerWeekMatch[0].match(/(week|weekly|month|monthly|day|year|annual|annually)/i)?.[1] || 'week';
+    const period = /annual|year/i.test(rawPeriod) ? "year" : /month/i.test(rawPeriod) ? "month" : /day/i.test(rawPeriod) ? "day" : "week";
     metrics.push({ label: "Time Saved", value: `${number}${hasPlus ? '+' : ''} hours/${period}`, labelKey: "timeSaved" });
   } else if (metrics.length < 2) {
     // Fallback: Extract other hours patterns (but avoid ranges like "24–48")
@@ -94,21 +65,6 @@ function extractMetrics(outcome: string, locale: string = "en"): Array<{ label: 
   return metrics.slice(0, 2);
 }
 
-// Extract outcome summary (first sentence of Outcome section)
-function extractOutcomeSummary(content: string): string {
-  const outcomeMatch = content.match(/##\s+Outcome\s*\n\n([\s\S]*?)(?=\n\n|$)/i);
-  if (outcomeMatch) {
-    const outcomeText = outcomeMatch[1].trim();
-    // Get first sentence, removing markdown bold
-    const firstSentence = outcomeText
-      .replace(/\*\*/g, '')
-      .split(/[.!?]+/)[0]
-      .trim();
-    return firstSentence || outcomeText.split('\n')[0].trim();
-  }
-  return "";
-}
-
 export function FeaturedProjectCard({ 
   project, 
   locale 
@@ -121,8 +77,7 @@ export function FeaturedProjectCard({
   // Parse content to extract outcome section
   const outcomeMatch = project.content.match(/##\s+Outcome\s*\n\n([\s\S]*?)(?=\n\n##|$)/i);
   const outcomeText = outcomeMatch ? outcomeMatch[1].trim() : "";
-  const revenueImpact = extractRevenueImpact(outcomeText);
-  const metrics = extractMetrics(outcomeText, locale);
+  const metrics = extractMetrics(outcomeText);
   
   // Use frontmatter description for card copy (cleaner, more controlled)
   const outcomeSummary = fm.description;

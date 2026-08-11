@@ -28,10 +28,13 @@ export function FeaturedProjectsCarousel({ projects, locale }: FeaturedProjectsC
   // Check reduced motion preference
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setIsReducedMotion(mq.matches);
+    const initialMotionFrame = requestAnimationFrame(() => setIsReducedMotion(mq.matches));
     const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
     mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    return () => {
+      cancelAnimationFrame(initialMotionFrame);
+      mq.removeEventListener("change", handler);
+    };
   }, []);
 
   // Track scroll to determine selected index (leftmost visible card)
@@ -79,7 +82,7 @@ export function FeaturedProjectsCarousel({ projects, locale }: FeaturedProjectsC
     resizeObserver.observe(viewport);
 
     // Initial selected index
-    updateSelectedIndex();
+    rafId = requestAnimationFrame(updateSelectedIndex);
 
     return () => {
       viewport.removeEventListener("scroll", handleScroll);

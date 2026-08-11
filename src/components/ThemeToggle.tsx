@@ -1,13 +1,12 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useMounted } from "@/lib/useMounted";
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
   const effectiveTheme = useMemo(
     () => (theme === "system" ? resolvedTheme : theme),
     [theme, resolvedTheme]
